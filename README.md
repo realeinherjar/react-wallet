@@ -1,8 +1,94 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# React.js Bitcoin Wallet
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+| :warning: WARNING                                                |
+|:-----------------------------------------------------------------|
+| Do not use this wallet! It is for portfolio/learning purposes    |
+
+This is a [Next.js](https://nextjs.org/) project bootstrapped with
+[`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+It is a Bitcoin wallet that uses [`mempool.space`](https://mempool.space/)
+[Esplora](https://github.com/Blockstream/esplora/blob/master/API.md) API.
+
+## Scope
+
+Libraries used:
+
+- [React.js](https://react.dev/) and [Next.js](https://nextjs.org/) for the
+  frontend.
+- [Tailwind CSS](https://tailwindcss.com/) for styling.
+- [BitcoinJS](https://github.com/bitcoinjs/bitcoinjs-lib) for Bitcoin
+  transactions.
+
+Functionality:
+
+- Create a wallet from a network type (mainnet/testnet) and a mnemonic phrase.
+- Taproot addresses and descriptors by default.
+- Fetch the wallet's balance and transactions from the Esplora API.
+- Send bitcoin to an address.
+- Receive bitcoin by generating a new taproot address.
+
+Purpose:
+
+- Get acquainted with TypeScript.
+- Lean how to build apps with React.js and Next.js.
+- Learn how to fetch data asynchronously with Next.js.
+- Improve my tailwind CSS skills.
+- Tap into my Bitcoin knowledge and learn how to use BitcoinJS.
+- Use my knowledge of CI/CD with GitHub Actions to deploy the app to GitHub Pages.
+
+## How it works
+
+The wallet is a single page application that doesn't have server-side rendering or functionality.
+It is all done in the client-side, thus, can be deployed easily to GitHub Pages.
+Upon start it asks the user for a network type (mainnet or testnet)
+and a mnemonic phrase.
+This is done by BitcoinJS.
+
+<!-- TODO: insert screenshot -->
+
+Once the wallet is created, the app will fetch the wallet's balance and
+transactions from the API and display them.
+This is done with the new (version 13) [Next.js support for promises inside components](https://nextjs.org/blog/next-13#data-fetching).
+It uses the Esplora API which is hard-coded to use the `mempool.space` API.
+The balance is shown and the transactions are listed in a table.
+
+<!-- TODO: insert screenshot -->
+
+To send bitcoin, the user can click on the "Send" button and enter a recipient address and an amount.
+The app will create a transaction using BitcoinJS, sign it, and send it to the Esplora API.
+The default behavior (and currently the only one)
+is to use UTXOs starting from the oldest to the newest until the amount is reached,
+and add a change output if necessary.
+Additionally, the fee is calculated using the Esplora API.
+By default, the fee is set to whatever sat/vB necessary to get the transaction into the next block.
+
+<!-- TODO: insert screenshot -->
+
+To receive bitcoin, the user can click on the "Receive" button.
+This will generate a new address and QR code using BitcoinJS.
+By default this will be the next unused address in the wallet.
+
+<!-- TODO: insert screenshot -->
+
+There is a "Sync" button that will fetch the latest transactions from the Esplora API.
+
+<!-- TODO: insert screenshot -->
 
 ## Getting Started
 
-First, run the development server:
+First, install the dependencies:
+
+```bash
+npm install
+# or
+yarn install
+# or
+pnpm install
+```
+
+Then, run the development server:
 
 ```bash
 npm run dev
@@ -12,23 +98,4 @@ yarn dev
 pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the app.
