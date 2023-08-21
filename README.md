@@ -18,7 +18,7 @@ Libraries used:
 - [React.js](https://react.dev/) and [Next.js](https://nextjs.org/) for the
   frontend and async functionality.
 - [Tailwind CSS](https://tailwindcss.com/) for styling.
-- [BitcoinJS](https://github.com/bitcoinjs/bitcoinjs-lib) for Bitcoin
+- [BitcoinJS](https://github.com/bitcoinjs) for Bitcoin
   functionality.
 
 Functionality:
