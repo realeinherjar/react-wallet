@@ -10,7 +10,7 @@ export async function getBalance(address: string): Promise<Address> {
   try {
     const response = await fetch(
       `https://mempool.space/testnet/api/address/${address}`,
-      { next: { tags: ["refresh"], revalidate: 60 } }
+      { cache: 'no-store' }
     );
 
     if (!response.ok) {
