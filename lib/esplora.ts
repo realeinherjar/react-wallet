@@ -10,9 +10,6 @@ export async function getBalance(address: string): Promise<Address> {
   try {
     const response = await fetch(
       `https://mempool.space/testnet/api/address/${address}`,
-      // TODO: this should be recached when user clicks `Refresh` button
-      // check the `cache tag` in https://nextjs.org/docs/app/building-your-application/data-fetching/fetching-caching-and-revalidating#on-demand-revalidation
-      // { cache: "no-store" }
       { next: { tags: ["refresh"], revalidate: 60 } }
     );
 
@@ -41,4 +38,8 @@ export async function getBalance(address: string): Promise<Address> {
   } catch (error: any) {
     throw new Error(`Failed to fetch address data: ${error.message}`);
   }
+}
+
+export function getBalances(addresses: string[]): Promise<Address[]> {
+  return Promise.all(addresses.map((address) => getBalance(address)));
 }

@@ -1,5 +1,6 @@
-"use server";
-import { getBalance, Address } from "../utils/esplora";
+
+import { getBalances, Address } from "@/lib/esplora";
+
 export default async function AddressTable() {
   // TODO: delete fake data, this will be populated by the API
   const fakeAddress: string[] = [
@@ -9,9 +10,7 @@ export default async function AddressTable() {
     "tb1ph3q0utagzyylk6qxuaf98yzgfteesfmuajs5y3l5gyr4f8ktsldqp6rwmn",
   ];
 
-  const addresses: Address[] = await Promise.all(
-    fakeAddress.map((addr) => getBalance(addr))
-  );
+  const addresses: Address[] = await getBalances(fakeAddress);
 
   return (
     <table>
