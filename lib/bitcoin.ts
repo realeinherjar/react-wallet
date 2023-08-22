@@ -99,6 +99,7 @@ export async function buildUtxoSet(
           break;
         } else if (triesReceive > 0) {
           triesReceive--;
+          currentIndexReceive++;
         }
       }
     }
@@ -124,6 +125,7 @@ export async function buildUtxoSet(
           break;
         } else if (triesChange > 0) {
           triesChange--;
+          currentIndexChange++;
         }
       }
     }
