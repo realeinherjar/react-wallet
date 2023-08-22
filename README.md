@@ -26,8 +26,6 @@ Functionality:
 - Create a wallet from a network type (mainnet/testnet) and a mnemonic phrase.
 - Taproot addresses and descriptors by default.
 - Fetch the wallet's balance asynchronously from the Esplora API.
-- Send _all_ bitcoin (sweep wallet) to an address.
-- Receive bitcoin by generating a new taproot address.
 
 Purpose:
 
@@ -54,27 +52,6 @@ from the API and display them.
 This is done with the new (version 13) [Next.js support for promises inside components](https://nextjs.org/blog/next-13#data-fetching).
 It uses the Esplora API which is hard-coded to use the `mempool.space` API.
 The balance is shown and addresses are listed in a table.
-
-<!-- TODO: insert screenshot -->
-<!-- TODO: insert screenshot -->
-
-To send bitcoin, the user can click on the "Send" button and
-enter a recipient address and an amount.
-The app will create a transaction using BitcoinJS, sign it,
-and send it to the Esplora API.
-The default behavior (and currently the only one)
-is to send _all_ bitcoin to the recipient address,
-i.e. to sweep the wallet.
-Additionally, the fee is calculated using the Esplora API.
-By default,
-the fee is set to whatever sat/vB necessary
-to get the transaction into the next block.
-
-<!-- TODO: insert screenshot -->
-
-To receive bitcoin, the user can click on the "Receive" button.
-This will generate a new address and QR code using BitcoinJS.
-By default this will be the next unused address in the wallet.
 
 <!-- TODO: insert screenshot -->
 
