@@ -26,7 +26,7 @@ Functionality:
 - Create a wallet from a network type (mainnet/testnet) and a mnemonic phrase.
 - Taproot addresses and descriptors by default.
 - Fetch the wallet's balance asynchronously from the Esplora API.
-- Send bitcoin to an address.
+- Send _all_ bitcoin (sweep wallet) to an address.
 - Receive bitcoin by generating a new taproot address.
 
 Purpose:
@@ -63,8 +63,8 @@ enter a recipient address and an amount.
 The app will create a transaction using BitcoinJS, sign it,
 and send it to the Esplora API.
 The default behavior (and currently the only one)
-is to use UTXOs starting from the oldest to the newest until the amount is reached,
-and add a change output if necessary.
+is to send _all_ bitcoin to the recipient address,
+i.e. to sweep the wallet.
 Additionally, the fee is calculated using the Esplora API.
 By default,
 the fee is set to whatever sat/vB necessary
