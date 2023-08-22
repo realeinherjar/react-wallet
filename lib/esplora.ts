@@ -5,6 +5,7 @@ export interface Address {
   balance: number;
   pending: number;
   total: number;
+  tx_count: number;
 }
 
 // NOTE: this needs to match the TransactionInput interface from bitcoinjs-lib
@@ -19,7 +20,7 @@ export interface Utxo {
   value: number;
 }
 
-export async function getBalance(address: string): Promise<Address> {
+export async function fetchAddress(address: string): Promise<Address> {
   try {
     const response = await fetch(`${baseAddress}/address/${address}`, {
       cache: "no-store",
@@ -38,6 +39,8 @@ export async function getBalance(address: string): Promise<Address> {
     const balance: number = confirmedFundedTxoSum - confirmedSpentTxoSum;
     const pending: number = pendingFundedTxoSum;
     const total: number = balance + pending;
+    const tx_count: number =
+      json.chain_stats.tx_count + json.mempool_stats.tx_count;
 
     // Create an instance of the Address interface with the balance field
     const addressData: Address = {
@@ -45,6 +48,7 @@ export async function getBalance(address: string): Promise<Address> {
       balance: balance,
       pending: pending,
       total: total,
+      tx_count: tx_count,
     };
     return addressData;
   } catch (error: any) {
@@ -52,11 +56,15 @@ export async function getBalance(address: string): Promise<Address> {
   }
 }
 
-export function getBalances(addresses: string[]): Promise<Address[]> {
-  return Promise.all(addresses.map((address) => getBalance(address)));
+export function fetchAddresses(addresses: string[]): Promise<Address[]> {
+  return Promise.all(addresses.map((address) => fetchAddress(address)));
 }
 
-export async function getUtxo(address: string): Promise<Utxo> {
+export function hasBalance(addresses: Address): boolean {
+  return addresses.total > 0;
+}
+
+export async function fetchUtxo(address: string): Promise<Utxo> {
   try {
     const response = await fetch(`${baseAddress}/address/${address}/utxo`, {
       cache: "no-store",
@@ -84,7 +92,7 @@ export async function getUtxo(address: string): Promise<Utxo> {
   }
 }
 
-export async function getFeeEstimate(block: number = 1): Promise<number> {
+export async function fetchFeeEstimate(block: number = 1): Promise<number> {
   try {
     const response = await fetch(`${baseAddress}/fee-estimates`, {
       cache: "no-store",

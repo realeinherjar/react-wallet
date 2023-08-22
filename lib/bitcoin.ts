@@ -10,7 +10,13 @@ import {
   Signer,
 } from "bitcoinjs-lib";
 
-import { Utxo, getUtxo, getFeeEstimate } from "@/lib/esplora";
+import {
+  Utxo,
+  fetchUtxo,
+  fetchFeeEstimate,
+  fetchAddress,
+  hasBalance,
+} from "@/lib/esplora";
 
 const bip32 = BIP32Factory(ecc);
 initEccLib(ecc);
@@ -33,10 +39,14 @@ function getChildNode(type: string, index: number): BIP32Interface {
   return childNode;
 }
 
-export function getReceiveAddress(index: number, network: string): string {
+export function getAddress(
+  index: number,
+  network: string,
+  type: string
+): string {
   const networkType =
     network === "testnet" ? networks.testnet : networks.bitcoin;
-  const childNode = getChildNode("receive", index);
+  const childNode = getChildNode(type, index);
 
   const address = payments.p2tr({
     internalPubkey: childNode.publicKey.subarray(1),
@@ -46,27 +56,58 @@ export function getReceiveAddress(index: number, network: string): string {
   if (address === undefined) {
     throw new Error("Could not generate address");
   }
-  console.log(address);
+  // console.log(address);
   return address;
 }
 
-export function getChangeAddress(index: number, network: string): string {
-  const networkType =
-    network === "testnet" ? networks.testnet : networks.bitcoin;
-  const childNode = getChildNode("change", index);
+export async function buildUtxoSet(
+  network: string,
+  stopGap: number = 5
+): Promise<string[]> {
+  const networkType = network === "testnet" ? "testnet" : "mainnet";
+  let utxoSet: string[] = [];
+  let currentIndexReceive = 0;
+  let triesReceive = stopGap;
+  let currentIndexChange = 0;
+  let triesChange = stopGap;
 
-  const address = payments.p2tr({
-    internalPubkey: childNode.publicKey.subarray(1),
-    network: networkType,
-  }).address;
-
-  if (address === undefined) {
-    throw new Error("Could not generate address");
+  // scanning for receiving addresses until the stopGap is reached
+  while (true) {
+    let currentAddress = await fetchAddress(
+      getAddress(currentIndexReceive, networkType, "receive")
+    );
+    if (hasBalance(currentAddress)) {
+      utxoSet.push(currentAddress.address);
+      currentIndexReceive++;
+    } else {
+      if (currentAddress.tx_count == 0) {
+        if (triesReceive == 0) {
+          break;
+        } else if (triesReceive > 0) {
+          triesReceive--;
+        }
+      }
+    }
   }
-  console.log(address);
-  return address;
+  while (true) {
+    let currentAddress = await fetchAddress(
+      getAddress(currentIndexChange, networkType, "change")
+    );
+    if (hasBalance(currentAddress)) {
+      utxoSet.push(currentAddress.address);
+      currentIndexChange++;
+    } else {
+      if (currentAddress.tx_count == 0) {
+        if (triesChange == 0) {
+          break;
+        } else if (triesChange > 0) {
+          triesChange--;
+        }
+      }
+    }
+  }
+  return utxoSet;
 }
-// TODO: get addresses from mnemonic phrase with a stop gap of 5 addresses
 
 function getTweakedChildNode(childNode: BIP32Interface): Signer {
   // Used for signing, since the output and address are using a tweaked key
@@ -88,9 +129,9 @@ export async function buildTransaction(
     network === "testnet" ? networks.testnet : networks.bitcoin;
 
   const tweakedChildNode = getTweakedChildNode(childNode);
-  const utxo: Utxo = await getUtxo(address);
+  const utxo: Utxo = await fetchUtxo(address);
 
-  const feeEstimate: number = await getFeeEstimate(); // NOTE: hardcoded to block 1
+  const feeEstimate: number = await fetchFeeEstimate(); // NOTE: hardcoded to block 1
 
   const amount: number = utxo.value; // NOTE: this is in sats
 

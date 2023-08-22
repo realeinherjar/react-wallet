@@ -1,16 +1,11 @@
-import { getBalances, Address } from "@/lib/esplora";
-import { getReceiveAddress, getChangeAddress } from "@/lib/bitcoin";
+import { fetchAddresses, Address } from "@/lib/esplora";
+import { buildUtxoSet } from "@/lib/bitcoin";
 
 export default async function AddressTable() {
-  // TODO: delete fake data, this will be populated by the API
-  const fakeAddress: string[] = [
-    getReceiveAddress(0, "testnet"),
-    getReceiveAddress(1, "testnet"),
-    getChangeAddress(0, "testnet"),
-    getChangeAddress(1, "testnet"),
-  ];
+  const fakeAddress: string[] = await buildUtxoSet("testnet");
+  console.log(fakeAddress);
 
-  const addresses: Address[] = await getBalances(fakeAddress);
+  const addresses: Address[] = await fetchAddresses(fakeAddress);
 
   return (
     <table>
