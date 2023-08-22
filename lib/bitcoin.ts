@@ -16,7 +16,13 @@ import {
   fetchFeeEstimate,
   fetchAddress,
   hasBalance,
+  Address,
 } from "@/lib/esplora";
+
+export interface AddressExtended extends Address {
+  type: "Receiving" | "Change";
+  index: number;
+}
 
 const bip32 = BIP32Factory(ecc);
 initEccLib(ecc);
@@ -30,8 +36,8 @@ const path: string = "m/86'/1'/0'/";
 
 // TODO: add mnemonic
 // function getChildNode(mnemonic: string, type: string, index: number): BIP32Interface  {
-function getChildNode(type: string, index: number): BIP32Interface {
-  const pathType: string = type === "receive" ? "0" : "1";
+export function getChildNode(type: string, index: number): BIP32Interface {
+  const pathType: string = type === "Receiving" ? "0" : "1";
   const childPath: string = `${path}${pathType}/${index}`;
   const seed = mnemonicToSeedSync(mnemonic);
   const node = bip32.fromSeed(seed);
@@ -63,9 +69,9 @@ export function getAddress(
 export async function buildUtxoSet(
   network: string,
   stopGap: number = 5
-): Promise<string[]> {
+): Promise<AddressExtended[]> {
   const networkType = network === "testnet" ? "testnet" : "mainnet";
-  let utxoSet: string[] = [];
+  let utxoSet: AddressExtended[] = [];
   let currentIndexReceive = 0;
   let triesReceive = stopGap;
   let currentIndexChange = 0;
@@ -74,10 +80,18 @@ export async function buildUtxoSet(
   // scanning for receiving addresses until the stopGap is reached
   while (true) {
     let currentAddress = await fetchAddress(
-      getAddress(currentIndexReceive, networkType, "receive")
+      getAddress(currentIndexReceive, networkType, "Receiving")
     );
     if (hasBalance(currentAddress)) {
-      utxoSet.push(currentAddress.address);
+      utxoSet.push({
+        address: currentAddress.address,
+        balance: currentAddress.balance,
+        pending: currentAddress.pending,
+        total: currentAddress.total,
+        tx_count: currentAddress.tx_count,
+        type: "Receiving",
+        index: currentIndexReceive,
+      });
       currentIndexReceive++;
     } else {
       if (currentAddress.tx_count == 0) {
@@ -91,10 +105,18 @@ export async function buildUtxoSet(
   }
   while (true) {
     let currentAddress = await fetchAddress(
-      getAddress(currentIndexChange, networkType, "change")
+      getAddress(currentIndexChange, networkType, "Change")
     );
     if (hasBalance(currentAddress)) {
-      utxoSet.push(currentAddress.address);
+      utxoSet.push({
+        address: currentAddress.address,
+        balance: currentAddress.balance,
+        pending: currentAddress.pending,
+        total: currentAddress.total,
+        tx_count: currentAddress.tx_count,
+        type: "Change",
+        index: currentIndexChange,
+      });
       currentIndexChange++;
     } else {
       if (currentAddress.tx_count == 0) {
