@@ -1,11 +1,16 @@
 import { AddressExtended } from "@/lib/bitcoin";
 import { buildUtxoSet } from "@/lib/bitcoin";
 
+// components
+import Balance from "./Balance";
+
 export default async function AddressTable() {
   const addressList: AddressExtended[] = await buildUtxoSet("testnet");
+  const totalBalance = addressList.reduce((acc, addr) => acc + addr.total, 0);
 
   return (
-    <div>
+    <>
+      <Balance balance={totalBalance} />
       <table className="table-fixed lg:table-auto w-full">
         <thead>
           <tr className="text-sm md:text-lg">
@@ -35,6 +40,6 @@ export default async function AddressTable() {
             ))}
         </tbody>
       </table>
-    </div>
+    </>
   );
 }

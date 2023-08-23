@@ -34,6 +34,10 @@ const mnemonic: string =
 // hardcode the derivaton path to taproot
 const path: string = "m/86'/1'/0'/";
 
+export function convertBalance(balance: number) {
+  return balance / 100000000; // 100,000,000 satoshis in 1 BTC
+}
+
 // TODO: add mnemonic
 // function getChildNode(mnemonic: string, type: string, index: number): BIP32Interface  {
 export function getChildNode(type: string, index: number): BIP32Interface {
