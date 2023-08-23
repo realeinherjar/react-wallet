@@ -11,6 +11,13 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with
 It is a Bitcoin wallet that uses [`mempool.space`](https://mempool.space/)
 [Esplora](https://github.com/Blockstream/esplora/blob/master/API.md) API.
 
+## Screenshots
+
+| Desktop                                                                   | mobile                                                                  |
+| ------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| <img src="screenshots/desktop-light.png" width="450" alt="desktop-light"> | <img src="screenshots/mobile-light.png" width="250" alt="mobile-light"> |
+| <img src="screenshots/desktop-dark.png" width="450" alt="desktop-dark">   | <img src="screenshots/mobile-dark.png" width="250" alt="mobile-dark">   |
+
 ## Scope
 
 Libraries used:
@@ -41,11 +48,7 @@ Purpose:
 
 The wallet is a single page application that has server-side rendering
 on the transactions async API fetch from Esplora.
-Upon start it asks the user for a network type (mainnet or testnet)
-and a mnemonic phrase.
 This is done by BitcoinJS.
-
-<!-- TODO: insert screenshot -->
 
 Once the wallet is created, the app will fetch the wallet's balance
 from the API and display them.
@@ -53,12 +56,8 @@ This is done with the new (version 13) [Next.js support for promises inside comp
 It uses the Esplora API which is hard-coded to use the `mempool.space` API.
 The balance is shown and addresses are listed in a table.
 
-<!-- TODO: insert screenshot -->
-
 There is a "Sync" button that will reset the cached-data from
 the Esplora API and fetch the latest wallet balance.
-
-<!-- TODO: insert screenshot -->
 
 ## Getting Started
 
