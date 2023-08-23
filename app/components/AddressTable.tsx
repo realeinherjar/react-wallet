@@ -22,7 +22,7 @@ export default async function AddressTable() {
             .map((addr) => (
               <tr
                 key={addr.address}
-                className="hover:bg-orange-100 hover:font-semibold"
+                className="hover:bg-orange-100 hover:font-semibold dark:hover:bg-orange-900"
               >
                 <td className="truncate md:whitespace-normal hover:text-clip pl-1">
                   {addr.address}

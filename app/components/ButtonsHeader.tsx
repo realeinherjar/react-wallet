@@ -1,11 +1,11 @@
 // components
-import RefreshButton from "./RefreshButton";
+import SyncButton from "./SyncButton";
 import ThemeButton from "./ThemeButton";
 
 export default function ButtonsHeader() {
   return (
     <div className="relative pb-12">
-      <RefreshButton />
+      <SyncButton />
       <ThemeButton />
     </div>
   );
