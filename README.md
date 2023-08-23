@@ -11,6 +11,8 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with
 It is a Bitcoin wallet that uses [`mempool.space`](https://mempool.space/)
 [Esplora](https://github.com/Blockstream/esplora/blob/master/API.md) API.
 
+See it in action at [`vercel.app`](https://react-wallet-with-lasers.vercel.app/).
+
 ## Screenshots
 
 | Desktop                                                                   | mobile                                                                  |
